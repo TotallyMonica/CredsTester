@@ -4,11 +4,13 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"github.com/pbnjay/memory"
 	"io"
 	"log"
 	"math/rand"
 	"os"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -560,6 +562,10 @@ func main() {
 	fmt.Printf("Test numbers:            %t\n", runShouldFailNumber)
 	fmt.Printf("Test length:             %t\n", runShouldFailLength)
 	fmt.Printf("Test repeat count:       %d\n", testsToRun)
+
+	fmt.Printf("CPU Core count: %d\n", runtime.NumCPU())
+	fmt.Printf("Amount of memory: %d\n", memory.TotalMemory())
+	time.Sleep(5 * time.Second)
 
 	start := time.Now()
 	if doTests {
