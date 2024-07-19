@@ -26,5 +26,7 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+    - name: Get path
+      run: echo $PWD | base64
     - name: Run
-      run: go run -v ../main.go -run-tests -run-evals -run-all-tests -run 1000000
+      run: go run -v ../../main.go -run-tests -run-evals -run-all-tests -run 1000000
