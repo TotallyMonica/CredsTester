@@ -28,8 +28,8 @@ jobs:
       run: go test -v ./...
 
     - name: Run short tests
-      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 10
+      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 10 -exit-on-fail
     - name: Run medium tests
-      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000
+      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000 -exit-on-fail
     - name: Run long tests
-      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000000
+      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000000 -exit-on-fail

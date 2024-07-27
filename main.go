@@ -29,6 +29,7 @@ var runShouldFailSpecialChars bool
 var runShouldFailIllegalChars bool
 var doTests bool
 var doEvals bool
+var exitOnFail bool
 var testsToRun int
 var showProgress bool
 
@@ -511,6 +512,7 @@ func main() {
 	flag.BoolVar(&runShouldFailLower, "run-lowercase-test", false, "Test to make sure lowercase letters are required")
 	flag.BoolVar(&runShouldFailUpper, "run-uppercase-test", false, "Test to make sure uppercase letters are required")
 	flag.BoolVar(&runShouldFailNumber, "run-numbers-test", false, "Test to make sure numbers are required")
+	flag.BoolVar(&exitOnFail, "exit-on-fail", false, "Exit immediately on fail")
 	flag.IntVar(&testsToRun, "run", 100, "Specify how many times a test should be run")
 	runAllTests := flag.Bool("run-all-tests", false, "Runs all tests. Takes precedence of running specific tests")
 
@@ -549,6 +551,7 @@ func main() {
 	fmt.Printf("Test numbers:            %t\n", doTests && (runShouldFailNumber || *runAllTests))
 	fmt.Printf("Test length:             %t\n", doTests && (runShouldFailLength || *runAllTests))
 	fmt.Printf("Show progress:           %t\n", showProgress)
+	fmt.Printf("Exit on fail:            %t\n", exitOnFail)
 	fmt.Printf("Test repeat count:       %d\n", testsToRun)
 
 	start := time.Now()
@@ -622,6 +625,11 @@ func main() {
 				if showProgress {
 					printUpdate("OVERALL", i, testsToRun*tests, elapsed)
 				}
+			}
+			if exitOnFail && result.expectedResult != result.actualResult {
+				printUpdate("OVERALL", i, testsToRun*tests, elapsed)
+				fmt.Printf("Password %s failed (Expected %t, got %t)\n", result.testedPassword, result.expectedResult, result.actualResult)
+				os.Exit(1)
 			}
 		}
 		writer.Flush()
