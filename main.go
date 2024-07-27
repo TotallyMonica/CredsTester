@@ -518,7 +518,7 @@ func main() {
 
 	// Compile regexes
 	var err error
-	validPasswordRegex, err = regexp.Compile(`^([A-Z]|[a-z]|[0-9]|-|_|\.|\!|\$|\||\@|\%|\^|\&|\*){8,}$`)
+	validPasswordRegex, err = regexp.Compile(`^([A-Z]|[a-z]|[0-9]|-|_|\.|!|\$|\||@|%|\^|&|\*){8,}$`)
 	if err != nil {
 		log.Fatal("Error while compiling regex\n", err)
 	}
@@ -534,7 +534,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error while compiling regex\n", err)
 	}
-	passwordLegalSpecialRegex, err = regexp.Compile(`(-|_|\.|!|\$|\||@|%|\^|&|\*)`)
+	passwordLegalSpecialRegex, err = regexp.Compile(`([-_.!$|@%^&*])`)
 	if err != nil {
 		log.Fatal("Error while compiling regex\n", err)
 	}
