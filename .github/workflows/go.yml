@@ -26,5 +26,10 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-    - name: Run
-      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 100000
+
+    - name: Run short tests
+      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 10
+    - name: Run medium tests
+      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000
+    - name: Run long tests
+      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000000
