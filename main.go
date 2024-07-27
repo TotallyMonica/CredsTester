@@ -514,6 +514,7 @@ func main() {
 	flag.BoolVar(&runShouldFailNumber, "run-numbers-test", false, "Test to make sure numbers are required")
 	flag.BoolVar(&exitOnFail, "exit-on-fail", false, "Exit immediately on fail")
 	flag.IntVar(&testsToRun, "run", 100, "Specify how many times a test should be run")
+	verbose := flag.Bool("verbose", false, "Show verbose output")
 	runAllTests := flag.Bool("run-all-tests", false, "Runs all tests. Takes precedence of running specific tests")
 
 	flag.Parse()
@@ -541,18 +542,20 @@ func main() {
 		log.Fatal("Error while compiling regex\n", err)
 	}
 
-	fmt.Printf("Do tests:                %t\n", doTests)
-	fmt.Printf("Do evals:                %t\n", doEvals)
-	fmt.Printf("Run all tests:           %t\n", doTests && *runAllTests)
-	fmt.Printf("Test special characters: %t\n", doTests && (runShouldFailSpecialChars || *runAllTests))
-	fmt.Printf("Test illegal characters: %t\n", doTests && (runShouldFailIllegalChars || *runAllTests))
-	fmt.Printf("Test uppercase letters:  %t\n", doTests && (runShouldFailUpper || *runAllTests))
-	fmt.Printf("Test lowercase letters:  %t\n", doTests && (runShouldFailLower || *runAllTests))
-	fmt.Printf("Test numbers:            %t\n", doTests && (runShouldFailNumber || *runAllTests))
-	fmt.Printf("Test length:             %t\n", doTests && (runShouldFailLength || *runAllTests))
-	fmt.Printf("Show progress:           %t\n", showProgress)
-	fmt.Printf("Exit on fail:            %t\n", exitOnFail)
-	fmt.Printf("Test repeat count:       %d\n", testsToRun)
+	if *verbose {
+		fmt.Printf("Do tests:                %t\n", doTests)
+		fmt.Printf("Do evals:                %t\n", doEvals)
+		fmt.Printf("Run all tests:           %t\n", doTests && *runAllTests)
+		fmt.Printf("Test special characters: %t\n", doTests && (runShouldFailSpecialChars || *runAllTests))
+		fmt.Printf("Test illegal characters: %t\n", doTests && (runShouldFailIllegalChars || *runAllTests))
+		fmt.Printf("Test uppercase letters:  %t\n", doTests && (runShouldFailUpper || *runAllTests))
+		fmt.Printf("Test lowercase letters:  %t\n", doTests && (runShouldFailLower || *runAllTests))
+		fmt.Printf("Test numbers:            %t\n", doTests && (runShouldFailNumber || *runAllTests))
+		fmt.Printf("Test length:             %t\n", doTests && (runShouldFailLength || *runAllTests))
+		fmt.Printf("Show progress:           %t\n", showProgress)
+		fmt.Printf("Exit on fail:            %t\n", exitOnFail)
+		fmt.Printf("Test repeat count:       %d\n", testsToRun)
+	}
 
 	start := time.Now()
 	if doTests {
