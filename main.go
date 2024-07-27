@@ -64,9 +64,9 @@ func printUpdate(prefix string, current int, max int, elapsed time.Duration) {
 	} else if elapsed.Seconds() < 60 {
 		fmt.Printf("%.3g seconds\n", elapsed.Seconds())
 	} else if elapsed.Minutes() < 60 {
-		fmt.Printf("%.3g minutes, %d seconds\n", elapsed.Minutes(), int(elapsed.Seconds())%60)
+		fmt.Printf("%d minutes, %d seconds\n", int(elapsed.Minutes()), int(elapsed.Seconds())%60)
 	} else {
-		fmt.Printf("%.3g hours, %d minutes, %d seconds\n", elapsed.Hours(), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
+		fmt.Printf("%d hours, %d minutes, %d seconds\n", int(elapsed.Hours()), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
 	}
 }
 
@@ -548,6 +548,7 @@ func main() {
 	fmt.Printf("Test lowercase letters:  %t\n", doTests && (runShouldFailLower || *runAllTests))
 	fmt.Printf("Test numbers:            %t\n", doTests && (runShouldFailNumber || *runAllTests))
 	fmt.Printf("Test length:             %t\n", doTests && (runShouldFailLength || *runAllTests))
+	fmt.Printf("Show progress:           %t\n", showProgress)
 	fmt.Printf("Test repeat count:       %d\n", testsToRun)
 
 	start := time.Now()
@@ -635,7 +636,7 @@ func main() {
 		} else if elapsed.Milliseconds() < 1000 {
 			fmt.Printf("%d milliseconds\n", elapsed.Milliseconds())
 		} else if elapsed.Seconds() < 60 {
-			fmt.Printf("%.0g seconds\n", elapsed.Seconds())
+			fmt.Printf("%.3g seconds\n", elapsed.Seconds())
 		} else if elapsed.Minutes() < 60 {
 			fmt.Printf("%d minutes, %d seconds\n", int(elapsed.Minutes()), int(elapsed.Seconds())%60)
 		} else {
@@ -718,13 +719,13 @@ func main() {
 		} else if elapsed.Milliseconds() < 1000 {
 			fmt.Printf("%d milliseconds\n", elapsed.Milliseconds())
 		} else if elapsed.Seconds() < 60 {
-			fmt.Printf("%.0g seconds	\n", elapsed.Seconds())
+			fmt.Printf("%.3g seconds	\n", elapsed.Seconds())
 		} else if elapsed.Minutes() < 60 {
 			fmt.Printf("%d minutes, %d seconds\n", int(elapsed.Minutes()), int(elapsed.Seconds())%60)
 		} else {
 			fmt.Printf("%d hours, %d minutes, %d seconds\n", int(elapsed.Hours()), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
 		}
-	
+
 		os.Exit(failedTests)
 	}
 }
