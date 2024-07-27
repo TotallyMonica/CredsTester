@@ -618,15 +618,17 @@ func main() {
 			if err != nil {
 				log.Panicf("Issue while writing to file %s\n%s\n", file.Name(), err)
 			}
-			t := time.Now()
-			elapsed := t.Sub(start)
 			if i%updateFrequency == 0 {
 				writer.Flush()
 				if showProgress {
+					t := time.Now()
+					elapsed := t.Sub(start)
 					printUpdate("OVERALL", i, testsToRun*tests, elapsed)
 				}
 			}
 			if exitOnFail && result.expectedResult != result.actualResult {
+				t := time.Now()
+				elapsed := t.Sub(start)
 				printUpdate("OVERALL", i, testsToRun*tests, elapsed)
 				fmt.Printf("Password %s failed (Expected %t, got %t)\n", result.testedPassword, result.expectedResult, result.actualResult)
 				os.Exit(1)
