@@ -724,7 +724,7 @@ func main() {
 		} else {
 			fmt.Printf("%d hours, %d minutes, %d seconds\n", int(elapsed.Hours()), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
 		}
-
-		os.Exit(totalOfTests - failedTests)
+	
+		os.Exit(failedTests)
 	}
 }
