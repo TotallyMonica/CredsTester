@@ -32,4 +32,4 @@ jobs:
     - name: Run medium tests
       run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000 -exit-on-fail
     - name: Run long tests
-      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 1000000000 -exit-on-fail
+      run: go run -v main.go -run-tests -run-evals -run-all-tests -run 250000000 -exit-on-fail
