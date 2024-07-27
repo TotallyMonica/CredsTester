@@ -4,13 +4,11 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
-	"github.com/pbnjay/memory"
 	"io"
 	"log"
 	"math/rand"
 	"os"
 	"regexp"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -32,6 +30,7 @@ var runShouldFailIllegalChars bool
 var doTests bool
 var doEvals bool
 var testsToRun int
+var showProgress bool
 
 var validPasswordRegex *regexp.Regexp
 var passwordUpperLettersRegex *regexp.Regexp
@@ -129,7 +128,7 @@ func shouldFailIllegalChars(c chan testResults) {
 		testCount += 1
 		t := time.Now()
 		elapsed := t.Sub(start)
-		if testCount%updateFrequency == 0 {
+		if showProgress && testCount%updateFrequency == 0 {
 			printUpdate("SHOULD FAIL ILLEGAL CHARACTERS", testCount, testsToRun, elapsed)
 		}
 	}
@@ -137,19 +136,6 @@ func shouldFailIllegalChars(c chan testResults) {
 	t := time.Now()
 	elapsed := t.Sub(start)
 	printUpdate("SHOULD FAIL ILLEGAL CHARACTERS", testCount, testsToRun, elapsed)
-	if elapsed.Nanoseconds() < 1000 {
-		fmt.Printf("%d nanoseconds\n", elapsed.Nanoseconds())
-	} else if elapsed.Microseconds() < 1000 {
-		fmt.Printf("%d microseconds\n", elapsed.Microseconds())
-	} else if elapsed.Milliseconds() < 1000 {
-		fmt.Printf("%d milliseconds\n", elapsed.Milliseconds())
-	} else if elapsed.Seconds() < 1000 {
-		fmt.Printf("%.3g seconds\n", elapsed.Seconds())
-	} else if elapsed.Minutes() < 1000 {
-		fmt.Printf("%.3g minutes\n", elapsed.Minutes())
-	} else {
-		fmt.Printf("%.3g hours\n", elapsed.Hours())
-	}
 }
 
 func shouldPass(c chan testResults) {
@@ -203,7 +189,7 @@ func shouldPass(c chan testResults) {
 
 		c <- results
 		testCount += 1
-		if testCount%updateFrequency == 0 {
+		if showProgress && testCount%updateFrequency == 0 {
 			t := time.Now()
 			elapsed := t.Sub(start)
 			printUpdate("SHOULD PASS", testCount, testsToRun, elapsed)
@@ -263,7 +249,7 @@ func shouldFailSpecialChars(c chan testResults) {
 			testedPassword: generatedPassword,
 		}
 		testCount += 1
-		if testCount%updateFrequency == 0 {
+		if showProgress && testCount%updateFrequency == 0 {
 			t := time.Now()
 			elapsed := t.Sub(start)
 			printUpdate("SHOULD FAIL SPECIAL CHARS", testCount, testsToRun, elapsed)
@@ -323,7 +309,7 @@ func shouldFailNumber(c chan testResults) {
 			testedPassword: generatedPassword,
 		}
 		testCount += 1
-		if testCount%updateFrequency == 0 {
+		if showProgress && testCount%updateFrequency == 0 {
 			t := time.Now()
 			elapsed := t.Sub(start)
 			printUpdate("SHOULD FAIL NUMBER", testCount, testsToRun, elapsed)
@@ -382,7 +368,7 @@ func shouldFailLower(c chan testResults) {
 			testedPassword: generatedPassword,
 		}
 		testCount += 1
-		if testCount%updateFrequency == 0 {
+		if showProgress && testCount%updateFrequency == 0 {
 			t := time.Now()
 			elapsed := t.Sub(start)
 			printUpdate("SHOULD FAIL LOWER", testCount, testsToRun, elapsed)
@@ -442,7 +428,7 @@ func shouldFailUpper(c chan testResults) {
 			testedPassword: generatedPassword,
 		}
 		testCount += 1
-		if testCount%updateFrequency == 0 {
+		if showProgress && testCount%updateFrequency == 0 {
 			t := time.Now()
 			elapsed := t.Sub(start)
 			printUpdate("SHOULD FAIL UPPER", testCount, testsToRun, elapsed)
@@ -503,7 +489,7 @@ func shouldFailLength(c chan testResults) {
 			testedPassword: generatedPassword,
 		}
 		testCount += 1
-		if testCount%updateFrequency == 0 {
+		if showProgress && testCount%updateFrequency == 0 {
 			t := time.Now()
 			elapsed := t.Sub(start)
 			printUpdate("SHOULD FAIL LENGTH", testCount, testsToRun, elapsed)
@@ -518,6 +504,7 @@ func main() {
 	// Parse flags
 	flag.BoolVar(&doTests, "run-tests", false, "Run the tests. Omission takes precedence over -all and specifying individual tests")
 	flag.BoolVar(&doEvals, "run-evals", false, "Evaluate results.csv")
+	flag.BoolVar(&showProgress, "show-progress", false, "Print progress to stdout")
 	flag.BoolVar(&runShouldFailSpecialChars, "run-special-char-test", false, "Test to make sure special characters are required")
 	flag.BoolVar(&runShouldFailIllegalChars, "run-illegal-char-test", false, "Test to make sure illegal characters aren't allowed")
 	flag.BoolVar(&runShouldFailLength, "run-length-test", false, "Test to make sure passwords need to be sufficiently long enough")
@@ -533,23 +520,23 @@ func main() {
 	var err error
 	validPasswordRegex, err = regexp.Compile(`^([A-Z]|[a-z]|[0-9]|-|_|\.|\!|\$|\||\@|\%|\^|\&|\*){8,}$`)
 	if err != nil {
-		log.Fatal("Error while compililng regex\n", err)
+		log.Fatal("Error while compiling regex\n", err)
 	}
 	passwordUpperLettersRegex, err = regexp.Compile(`[A-Z]`)
 	if err != nil {
-		log.Fatal("Error while compililng regex\n", err)
+		log.Fatal("Error while compiling regex\n", err)
 	}
 	passwordLowerLettersRegex, err = regexp.Compile(`[a-z]`)
 	if err != nil {
-		log.Fatal("Error while compililng regex\n", err)
+		log.Fatal("Error while compiling regex\n", err)
 	}
 	passwordNumbersRegex, err = regexp.Compile(`[0-9]`)
 	if err != nil {
-		log.Fatal("Error while compililng regex\n", err)
+		log.Fatal("Error while compiling regex\n", err)
 	}
 	passwordLegalSpecialRegex, err = regexp.Compile(`(-|_|\.|!|\$|\||@|%|\^|&|\*)`)
 	if err != nil {
-		log.Fatal("Error while compililng regex\n", err)
+		log.Fatal("Error while compiling regex\n", err)
 	}
 
 	fmt.Printf("Do tests:                %t\n", doTests)
@@ -562,10 +549,6 @@ func main() {
 	fmt.Printf("Test numbers:            %t\n", runShouldFailNumber)
 	fmt.Printf("Test length:             %t\n", runShouldFailLength)
 	fmt.Printf("Test repeat count:       %d\n", testsToRun)
-
-	fmt.Printf("CPU Core count: %d\n", runtime.NumCPU())
-	fmt.Printf("Amount of memory: %d\n", memory.TotalMemory())
-	time.Sleep(5 * time.Second)
 
 	start := time.Now()
 	if doTests {
@@ -634,8 +617,10 @@ func main() {
 			t := time.Now()
 			elapsed := t.Sub(start)
 			if i%updateFrequency == 0 {
-				printUpdate("OVERALL", i, testsToRun*tests, elapsed)
 				writer.Flush()
+				if showProgress {
+					printUpdate("OVERALL", i, testsToRun*tests, elapsed)
+				}
 			}
 		}
 		writer.Flush()
@@ -684,6 +669,7 @@ func main() {
 		}
 
 		// Get all the tests
+		failedTests := 0
 		totalOfTests := 0
 		for err != io.EOF {
 			password := strings.Join(line[:len(line)-2], ",")
@@ -693,6 +679,7 @@ func main() {
 			// Report if a password had different results from what was expected
 			if expected != actual {
 				fmt.Printf("%s did not meet expectations (Expected result of %s, got %s)\n", password, expected, actual)
+				failedTests += 1
 			}
 			totalOfTests += 1
 			line, err = reader.Read()
@@ -704,6 +691,8 @@ func main() {
 		elapsed := t.Sub(evalStart)
 
 		fmt.Printf("Total number of tests ran: %d\n", totalOfTests)
+		fmt.Printf("Number of passing tests: %d (%.3g%%)\n", totalOfTests-failedTests, float32((totalOfTests-failedTests)/totalOfTests)*100)
+
 		fmt.Printf("Total time to evaluate test results: ")
 		if elapsed.Nanoseconds() < 1000 {
 			fmt.Printf("%d nanoseconds\n", elapsed.Nanoseconds())
@@ -712,16 +701,16 @@ func main() {
 		} else if elapsed.Milliseconds() < 1000 {
 			fmt.Printf("%d milliseconds\n", elapsed.Milliseconds())
 		} else if elapsed.Seconds() < 60 {
-			fmt.Printf("%.0g seconds\n", elapsed.Seconds())
+			fmt.Printf("%.3g seconds\n", elapsed.Seconds())
 		} else if elapsed.Minutes() < 60 {
-			fmt.Printf("%.0g minutes, %d seconds\n", elapsed.Minutes(), int(elapsed.Seconds())%60)
+			fmt.Printf("%d minutes, %d seconds\n", int(elapsed.Minutes()), int(elapsed.Seconds())%60)
 		} else {
-			fmt.Printf("%.0g hours, %d minutes, %d seconds\n", elapsed.Hours(), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
+			fmt.Printf("%d hours, %d minutes, %d seconds\n", int(elapsed.Hours()), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
 		}
 
 		t = time.Now()
 		elapsed = t.Sub(start)
-		fmt.Printf("Overall time to evaluate test results: ")
+		fmt.Printf("%d: Overall time to evaluate test results: ")
 		if elapsed.Nanoseconds() < 1000 {
 			fmt.Printf("%d nanoseconds\n", elapsed.Nanoseconds())
 		} else if elapsed.Microseconds() < 1000 {
@@ -729,11 +718,11 @@ func main() {
 		} else if elapsed.Milliseconds() < 1000 {
 			fmt.Printf("%d milliseconds\n", elapsed.Milliseconds())
 		} else if elapsed.Seconds() < 60 {
-			fmt.Printf("%.0g seconds\n", elapsed.Seconds())
+			fmt.Printf("%.0g seconds (L%d)\n", elapsed.Seconds())
 		} else if elapsed.Minutes() < 60 {
-			fmt.Printf("%.0g minutes, %d seconds\n", elapsed.Minutes(), int(elapsed.Seconds())%60)
+			fmt.Printf("%d minutes, %d seconds\n", int(elapsed.Minutes()), int(elapsed.Seconds())%60)
 		} else {
-			fmt.Printf("%.0g hours, %d minutes, %d seconds\n", elapsed.Hours(), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
+			fmt.Printf("%d hours, %d minutes, %d seconds\n", int(elapsed.Hours()), int(elapsed.Minutes())%60, int(elapsed.Seconds())%60)
 		}
 	}
 }
