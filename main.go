@@ -710,7 +710,7 @@ func main() {
 
 		t = time.Now()
 		elapsed = t.Sub(start)
-		fmt.Printf("%d: Overall time to evaluate test results: ")
+		fmt.Printf("Overall time to evaluate test results: ")
 		if elapsed.Nanoseconds() < 1000 {
 			fmt.Printf("%d nanoseconds\n", elapsed.Nanoseconds())
 		} else if elapsed.Microseconds() < 1000 {
@@ -718,7 +718,7 @@ func main() {
 		} else if elapsed.Milliseconds() < 1000 {
 			fmt.Printf("%d milliseconds\n", elapsed.Milliseconds())
 		} else if elapsed.Seconds() < 60 {
-			fmt.Printf("%.0g seconds (L%d)\n", elapsed.Seconds())
+			fmt.Printf("%.0g seconds	\n", elapsed.Seconds())
 		} else if elapsed.Minutes() < 60 {
 			fmt.Printf("%d minutes, %d seconds\n", int(elapsed.Minutes()), int(elapsed.Seconds())%60)
 		} else {
