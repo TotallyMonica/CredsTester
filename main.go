@@ -616,6 +616,9 @@ func main() {
 			row := []string{result.testedPassword, fmt.Sprintf("%t", result.expectedResult), fmt.Sprintf("%t", result.actualResult)}
 			err := writer.Write(row)
 			if err != nil {
+				t := time.Now()
+				elapsed := t.Sub(start)
+				printUpdate("OVERALL", i, testsToRun*tests, elapsed)
 				log.Panicf("Issue while writing to file %s\n%s\n", file.Name(), err)
 			}
 			if i%updateFrequency == 0 {
